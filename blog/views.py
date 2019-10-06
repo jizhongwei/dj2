@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.core.paginator import Paginator
-
+from django.db.models import Count
 from django.conf import settings
 
 from .models import Blog, BlogType
@@ -24,6 +24,7 @@ def blog_list(request):
     if page_range[-1] != paginator.num_pages:
         page_range.append(paginator.num_pages)
 
+    # BlogType.objects.annotate(blog_count = Count('blog'))
     context = {}
     context['page_of_blogs'] = page_of_blogs
     context['blog_types'] = BlogType.objects.all()
