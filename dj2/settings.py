@@ -136,3 +136,11 @@ CKEDITOR_UPLOAD_PATH = 'upload/'
 
 #自定义配置
 NUMBER_BLOGS_PER_PAGE = 4
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}

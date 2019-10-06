@@ -2,9 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.fields import exceptions
 from django.contrib.contenttypes.models import ContentType
-from read_statistics.models import ReadNum
+from django.contrib.contenttypes.fields import GenericRelation
+
 from ckeditor_uploader.fields import RichTextUploadingField
 
+from read_statistics.models import ReadNum, ReadDetail
 from read_statistics.models import Get_Read_Num
 
 class BlogType(models.Model):
@@ -22,6 +24,7 @@ class Blog(models.Model, Get_Read_Num):
     created_time = models.DateTimeField(auto_now_add= True)
     last_updated_time = models.DateTimeField(auto_now= True)
 
+    read_details = GenericRelation(ReadDetail)
 
 
     def __str__(self):
