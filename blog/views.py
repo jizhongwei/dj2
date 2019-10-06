@@ -33,7 +33,7 @@ def blog_list(request):
     context['blog_types'] = BlogType.objects.all()
     context['page_range'] = page_range
     context['blog_dates'] = Blog.objects.dates('created_time', 'month', order= 'DESC')
-    return render_to_response('blog/blog_list.html', context)
+    return render(request,'blog/blog_list.html', context)
 
 
 def blog_detail(request, blog_pk):
@@ -44,7 +44,8 @@ def blog_detail(request, blog_pk):
     context['previous_blog'] = Blog.objects.filter(created_time__gt= blog.created_time).last()
     context['next_blog'] = Blog.objects.filter(created_time__lt= blog.created_time).first()
     context['blog'] = blog
-    response =  render_to_response('blog/blog_detail.html', context)
+    # context['user'] = request.user
+    response =  render(request,'blog/blog_detail.html', context)
     response.set_cookie(read_cookie_key, 'true', max_age= 60)
     return response
 
@@ -74,7 +75,7 @@ def blogs_with_type(request, blogs_type_pk):
     context['page_range'] = page_range
     context['blog_dates'] = Blog.objects.dates('created_time', 'month', order= 'DESC')
 
-    return render_to_response('blog/blogs_with_type.html', context)
+    return render(request,'blog/blogs_with_type.html', context)
 
 
 def blogs_with_date(request, year, month):
@@ -104,4 +105,4 @@ def blogs_with_date(request, year, month):
     context['page_range'] = page_range
     context['blog_dates'] = Blog.objects.dates('created_time', 'month', order= 'DESC')
 
-    return render_to_response('blog/blogs_with_date.html', context)
+    return render(request,'blog/blogs_with_date.html', context)
