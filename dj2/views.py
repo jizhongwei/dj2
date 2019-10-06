@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db.models import Sum
 from django.core.cache import cache
 from django.contrib import auth
+from django.urls import reverse
 import datetime
 
 from read_statistics.utils import get_seven_read_data, get_today_hot_data, get_yesterday_hot_data
@@ -48,9 +49,10 @@ def login(request):
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')
     user = auth.authenticate(request, username = username, password=password)
+    referer = request.META.get('HTTP_REFERER', reverse('home'))
     if user is not None:
         auth.login(request, user)
-        return redirect('home')
+        return redirect(referer)
     else:
         return render(request, 'error.html', {'msg': '用户名或密码不正确'})
 
