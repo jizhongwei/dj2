@@ -1,9 +1,12 @@
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.core.paginator import Paginator
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
 from django.conf import settings
 
-from .models import Blog, BlogType, ReadNum
+from read_statistics.models import ReadNum
+from .models import Blog, BlogType
+from read_statistics.utils import read_statistics_once_read
 
 
 def blog_list(request):
@@ -36,22 +39,13 @@ def blog_list(request):
 def blog_detail(request, blog_pk):
     context = {}
     blog = get_object_or_404(Blog, pk = blog_pk)
-    if not request.COOKIES.get('blog_%s_readed' % blog_pk):
-        if ReadNum.objects.filter(blog = blog).count():
-            readnum = ReadNum.objects.get(blog=blog)
-            # readnum.readed_num += 1
-            # readnum.save()
-        else:
-            readnum = ReadNum(blog=blog)
-            # readnum.blog = blog
-        readnum.readed_num += 1
-        readnum.save()
+    read_cookie_key = read_statistics_once_read(request, blog)
 
     context['previous_blog'] = Blog.objects.filter(created_time__gt= blog.created_time).last()
     context['next_blog'] = Blog.objects.filter(created_time__lt= blog.created_time).first()
     context['blog'] = blog
     response =  render_to_response('blog/blog_detail.html', context)
-    response.set_cookie('blog_%s_readed' % blog_pk, 'true', max_age= 60)
+    response.set_cookie(read_cookie_key, 'true', max_age= 60)
     return response
 
 def blogs_with_type(request, blogs_type_pk):
