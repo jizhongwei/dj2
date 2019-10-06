@@ -4,5 +4,5 @@
     {{ blog_type.type_name }}
 {% endblock %}
 {% block blog_list_title %}
-    {{ blog_type.type_name }}(一共有{{ blogs | length }}篇博客)
+    分类：{{ blog_type.type_name }}(一共有{{ page_of_blogs.object_list.count }}篇博客)
 {% endblock %}
