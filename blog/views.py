@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.db.models import Count
 from django.conf import settings
 
-from .models import Blog, BlogType
+from .models import Blog, BlogType, ReadNum
 
 
 def blog_list(request):
@@ -37,8 +37,16 @@ def blog_detail(request, blog_pk):
     context = {}
     blog = get_object_or_404(Blog, pk = blog_pk)
     if not request.COOKIES.get('blog_%s_readed' % blog_pk):
-        blog.readed_num += 1
-        blog.save(update_fields= ['readed_num',])
+        if ReadNum.objects.filter(blog = blog).count():
+            readnum = ReadNum.objects.get(blog=blog)
+            # readnum.readed_num += 1
+            # readnum.save()
+        else:
+            readnum = ReadNum(blog=blog)
+            # readnum.blog = blog
+        readnum.readed_num += 1
+        readnum.save()
+
     context['previous_blog'] = Blog.objects.filter(created_time__gt= blog.created_time).last()
     context['next_blog'] = Blog.objects.filter(created_time__lt= blog.created_time).first()
     context['blog'] = blog
